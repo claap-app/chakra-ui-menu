@@ -536,7 +536,7 @@ function useMenuItem(props, externalRef) {
       onClose();
     }
   }, [onClose, onClickProp, menuCloseOnSelect, closeOnSelect]);
-  var onFocus = useCallback(function (event) {
+  var onFocus = React.useCallback(function (event) {
     onFocusProp == null ? void 0 : onFocusProp(event);
     setFocusedIndex(index);
   }, [setFocusedIndex, onFocusProp, index]);

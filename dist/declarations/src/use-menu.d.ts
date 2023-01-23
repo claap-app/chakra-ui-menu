@@ -133,9 +133,11 @@ export declare function useMenuButton(props?: UseMenuButtonProps, externalRef?: 
     "aria-controls": string;
     onClick: (event: React.MouseEvent<Element, MouseEvent>) => void;
     onKeyDown: (event: React.KeyboardEvent<Element>) => void;
+    children?: React.ReactNode;
     slot?: string | undefined;
     style?: React.CSSProperties | undefined;
     title?: string | undefined;
+    dir?: string | undefined;
     defaultChecked?: boolean | undefined;
     defaultValue?: string | number | readonly string[] | undefined;
     suppressContentEditableWarning?: boolean | undefined;
@@ -144,7 +146,6 @@ export declare function useMenuButton(props?: UseMenuButtonProps, externalRef?: 
     className?: string | undefined;
     contentEditable?: "inherit" | (boolean | "false" | "true") | undefined;
     contextMenu?: string | undefined;
-    dir?: string | undefined;
     draggable?: (boolean | "false" | "true") | undefined;
     hidden?: boolean | undefined;
     lang?: string | undefined;
@@ -173,7 +174,7 @@ export declare function useMenuButton(props?: UseMenuButtonProps, externalRef?: 
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "text" | "search" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     'aria-activedescendant'?: string | undefined;
     'aria-atomic'?: (boolean | "false" | "true") | undefined;
@@ -220,7 +221,6 @@ export declare function useMenuButton(props?: UseMenuButtonProps, externalRef?: 
     'aria-valuemin'?: number | undefined;
     'aria-valuenow'?: number | undefined;
     'aria-valuetext'?: string | undefined;
-    children?: React.ReactNode;
     dangerouslySetInnerHTML?: {
         __html: string;
     } | undefined;
@@ -1189,6 +1189,7 @@ export declare function useMenuList(props?: UseMenuListProps, ref?: React.Ref<an
     onKeyDown: (event: React.KeyboardEvent<Element>) => void;
     slot?: string | undefined;
     title?: string | undefined;
+    dir?: string | undefined;
     defaultChecked?: boolean | undefined;
     defaultValue?: string | number | readonly string[] | undefined;
     suppressContentEditableWarning?: boolean | undefined;
@@ -1197,7 +1198,6 @@ export declare function useMenuList(props?: UseMenuListProps, ref?: React.Ref<an
     className?: string | undefined;
     contentEditable?: "inherit" | (boolean | "false" | "true") | undefined;
     contextMenu?: string | undefined;
-    dir?: string | undefined;
     draggable?: (boolean | "false" | "true") | undefined;
     hidden?: boolean | undefined;
     lang?: string | undefined;
@@ -1224,7 +1224,7 @@ export declare function useMenuList(props?: UseMenuListProps, ref?: React.Ref<an
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "text" | "search" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     'aria-activedescendant'?: string | undefined;
     'aria-atomic'?: (boolean | "false" | "true") | undefined;
@@ -1437,10 +1437,12 @@ export declare function useMenuList(props?: UseMenuListProps, ref?: React.Ref<an
     onTransitionEndCapture?: React.TransitionEventHandler<Element> | undefined;
 };
 export declare function useMenuPositioner(props?: any): {
+    children?: React.ReactNode;
+    ref?: ((instance: HTMLDivElement | null) => void) | React.RefObject<HTMLDivElement> | null | undefined;
     slot?: string | undefined;
     style?: React.CSSProperties | undefined;
     title?: string | undefined;
-    ref?: ((instance: HTMLDivElement | null) => void) | React.RefObject<HTMLDivElement> | null | undefined;
+    dir?: string | undefined;
     key?: React.Key | null | undefined;
     defaultChecked?: boolean | undefined;
     defaultValue?: string | number | readonly string[] | undefined;
@@ -1450,7 +1452,6 @@ export declare function useMenuPositioner(props?: any): {
     className?: string | undefined;
     contentEditable?: "inherit" | (boolean | "false" | "true") | undefined;
     contextMenu?: string | undefined;
-    dir?: string | undefined;
     draggable?: (boolean | "false" | "true") | undefined;
     hidden?: boolean | undefined;
     id?: string | undefined;
@@ -1480,7 +1481,7 @@ export declare function useMenuPositioner(props?: any): {
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "text" | "search" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     'aria-activedescendant'?: string | undefined;
     'aria-atomic'?: (boolean | "false" | "true") | undefined;
@@ -1530,7 +1531,6 @@ export declare function useMenuPositioner(props?: any): {
     'aria-valuemin'?: number | undefined;
     'aria-valuenow'?: number | undefined;
     'aria-valuetext'?: string | undefined;
-    children?: React.ReactNode;
     dangerouslySetInnerHTML?: {
         __html: string;
     } | undefined;
@@ -1768,7 +1768,7 @@ export declare function useMenuItem(props?: UseMenuItemProps, externalRef?: Reac
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "text" | "search" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     'aria-activedescendant'?: string | undefined;
     'aria-atomic'?: (boolean | "false" | "true") | undefined;
@@ -2028,7 +2028,7 @@ export declare function useMenuItem(props?: UseMenuItemProps, externalRef?: Reac
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "text" | "search" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     'aria-activedescendant'?: string | undefined;
     'aria-atomic'?: (boolean | "false" | "true") | undefined;
@@ -2298,7 +2298,7 @@ export declare function useMenuOption(props?: UseMenuOptionProps, ref?: React.Re
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "text" | "search" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     'aria-activedescendant'?: string | undefined;
     'aria-atomic'?: (boolean | "false" | "true") | undefined;
@@ -2558,7 +2558,7 @@ export declare function useMenuOption(props?: UseMenuOptionProps, ref?: React.Re
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "text" | "search" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     'aria-activedescendant'?: string | undefined;
     'aria-atomic'?: (boolean | "false" | "true") | undefined;
