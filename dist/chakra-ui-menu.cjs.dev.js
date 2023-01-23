@@ -141,9 +141,11 @@ function useMenu(props) {
   var focusFirstItem = React__namespace.useCallback(function () {
     var id = setTimeout(function () {
       if (initialFocusRef) {
-        var _initialFocusRef$curr;
-
-        (_initialFocusRef$curr = initialFocusRef.current) == null ? void 0 : _initialFocusRef$curr.focus();
+        if (initialFocusRef.current) {
+          initialFocusRef.current.focus();
+          var index = descendants.indexOf(initialFocusRef.current);
+          setFocusedIndex(index);
+        }
       } else {
         var first = descendants.firstEnabled();
         if (first) setFocusedIndex(first.index);
