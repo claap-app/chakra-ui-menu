@@ -140,26 +140,20 @@ function useMenu(props) {
   }, []);
   var focusFirstItem = React__namespace.useCallback(function () {
     var id = setTimeout(function () {
-      if (initialFocusRef) {
-        if (initialFocusRef.current) {
-          initialFocusRef.current.focus();
-          var index = descendants.indexOf(initialFocusRef.current);
-          setFocusedIndex(index);
-        }
-      } else {
-        var first = descendants.firstEnabled();
-        if (first) setFocusedIndex(first.index);
-      }
+      if (initialFocusRef) return;
+      var first = descendants.firstEnabled();
+      if (first) setFocusedIndex(first.index);
     });
     timeoutIds.current.add(id);
   }, [descendants, initialFocusRef]);
   var focusLastItem = React__namespace.useCallback(function () {
     var id = setTimeout(function () {
+      if (initialFocusRef) return;
       var last = descendants.lastEnabled();
       if (last) setFocusedIndex(last.index);
     });
     timeoutIds.current.add(id);
-  }, [descendants]);
+  }, [descendants, initialFocusRef]);
   var onOpenInternal = React__namespace.useCallback(function () {
     onOpenProp == null ? void 0 : onOpenProp();
 
@@ -169,6 +163,11 @@ function useMenu(props) {
       focusMenu();
     }
   }, [autoSelect, focusFirstItem, focusMenu, onOpenProp]);
+  hooks.useFocusOnShow(menuRef, {
+    focusRef: initialFocusRef,
+    visible: isOpenProp,
+    shouldFocus: true
+  });
 
   var _useDisclosure = hooks.useDisclosure({
     isOpen: isOpenProp,

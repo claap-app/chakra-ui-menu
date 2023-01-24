@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import { useClickable } from '@chakra-ui/clickable';
 import { createDescendantContext } from '@chakra-ui/descendant';
-import { useDisclosure, useOutsideClick, useUpdateEffect, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
+import { useFocusOnShow, useDisclosure, useOutsideClick, useUpdateEffect, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
 import { useAnimationState } from '@chakra-ui/hooks/use-animation-state';
 import { usePopper } from '@chakra-ui/popper';
 import { createContext, mergeRefs, getValidChildren } from '@chakra-ui/react-utils';
@@ -116,26 +116,20 @@ function useMenu(props) {
   }, []);
   var focusFirstItem = React.useCallback(function () {
     var id = setTimeout(function () {
-      if (initialFocusRef) {
-        if (initialFocusRef.current) {
-          initialFocusRef.current.focus();
-          var index = descendants.indexOf(initialFocusRef.current);
-          setFocusedIndex(index);
-        }
-      } else {
-        var first = descendants.firstEnabled();
-        if (first) setFocusedIndex(first.index);
-      }
+      if (initialFocusRef) return;
+      var first = descendants.firstEnabled();
+      if (first) setFocusedIndex(first.index);
     });
     timeoutIds.current.add(id);
   }, [descendants, initialFocusRef]);
   var focusLastItem = React.useCallback(function () {
     var id = setTimeout(function () {
+      if (initialFocusRef) return;
       var last = descendants.lastEnabled();
       if (last) setFocusedIndex(last.index);
     });
     timeoutIds.current.add(id);
-  }, [descendants]);
+  }, [descendants, initialFocusRef]);
   var onOpenInternal = React.useCallback(function () {
     onOpenProp == null ? void 0 : onOpenProp();
 
@@ -145,6 +139,11 @@ function useMenu(props) {
       focusMenu();
     }
   }, [autoSelect, focusFirstItem, focusMenu, onOpenProp]);
+  useFocusOnShow(menuRef, {
+    focusRef: initialFocusRef,
+    visible: isOpenProp,
+    shouldFocus: true
+  });
 
   var _useDisclosure = useDisclosure({
     isOpen: isOpenProp,
