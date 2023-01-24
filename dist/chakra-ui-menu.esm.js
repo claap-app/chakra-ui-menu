@@ -1,13 +1,16 @@
 import { useMultiStyleConfig, omitThemingProps, useTheme, StylesProvider, forwardRef, chakra, useStyles } from '@chakra-ui/system';
-import { focus, getOwnerDocument, normalizeEventKey, dataAttr, callAllHandlers, isHTMLElement, getNextItemFromSearch, determineLazyBehavior, isActiveElement, isString, isArray, removeItem, addItem, runIfFn, __DEV__, cx, callAll } from '@chakra-ui/utils';
+import { isRefObject, getAllFocusable, focus, getOwnerDocument, normalizeEventKey, dataAttr, callAllHandlers, isHTMLElement, getNextItemFromSearch, determineLazyBehavior, isActiveElement, isString, isArray, removeItem, addItem, runIfFn, __DEV__, cx, callAll } from '@chakra-ui/utils';
 import { motion } from 'framer-motion';
 import * as React from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useClickable } from '@chakra-ui/clickable';
 import { createDescendantContext } from '@chakra-ui/descendant';
-import { useFocusOnShowV2, useDisclosure, useOutsideClick, useUpdateEffect, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
+import { useCallbackRef, useDisclosure, useOutsideClick, useUpdateEffect as useUpdateEffect$1, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
 import { useAnimationState } from '@chakra-ui/hooks/use-animation-state';
 import { usePopper } from '@chakra-ui/popper';
 import { createContext, mergeRefs, getValidChildren } from '@chakra-ui/react-utils';
+import { useUpdateEffect } from '@chakra-ui/hooks/src/use-update-effect';
+import { useSafeLayoutEffect } from '@chakra-ui/hooks/src/use-safe-layout-effect';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -40,6 +43,78 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   }
 
   return target;
+}
+
+function useEventListener(target, event, handler, options) {
+  var listener = useCallbackRef(handler);
+  useEffect(function () {
+    var node = typeof target === "function" ? target() : target != null ? target : document;
+    if (!handler || !node) return;
+    node.addEventListener(event, listener, options);
+    return function () {
+      node.removeEventListener(event, listener, options);
+    };
+  }, [event, target, options, listener, handler]);
+  return function () {
+    var node = typeof target === "function" ? target() : target != null ? target : document;
+    node == null ? void 0 : node.removeEventListener(event, listener, options);
+  };
+}
+
+var defaultOptions = {
+  preventScroll: true,
+  shouldFocus: false
+};
+function useFocusOnShow(target, options) {
+  if (options === void 0) {
+    options = defaultOptions;
+  }
+
+  var _options = options,
+      focusRef = _options.focusRef,
+      preventScroll = _options.preventScroll,
+      shouldFocus = _options.shouldFocus,
+      visible = _options.visible;
+  var element = isRefObject(target) ? target.current : target;
+  var autoFocusValue = shouldFocus && visible;
+  var autoFocusRef = useRef(autoFocusValue);
+  var lastVisibleRef = useRef(visible);
+  useSafeLayoutEffect(function () {
+    if (!lastVisibleRef.current && visible) {
+      autoFocusRef.current = autoFocusValue;
+    }
+
+    lastVisibleRef.current = visible;
+  }, [visible, autoFocusValue]);
+  var onFocus = useCallback(function () {
+    if (!visible || !element || !autoFocusRef.current) return;
+    autoFocusRef.current = false;
+    if (element.contains(document.activeElement)) return;
+
+    if (focusRef != null && focusRef.current) {
+      requestAnimationFrame(function () {
+        var _focusRef$current;
+
+        (_focusRef$current = focusRef.current) == null ? void 0 : _focusRef$current.focus({
+          preventScroll: preventScroll
+        });
+      });
+    } else {
+      var tabbableEls = getAllFocusable(element);
+
+      if (tabbableEls.length > 0) {
+        requestAnimationFrame(function () {
+          tabbableEls[0].focus({
+            preventScroll: preventScroll
+          });
+        });
+      }
+    }
+  }, [visible, preventScroll, element, focusRef]);
+  useUpdateEffect(function () {
+    onFocus();
+  }, [onFocus]);
+  useEventListener(element, "transitionend", onFocus);
 }
 
 var _excluded$1 = ["id", "closeOnSelect", "closeOnBlur", "initialFocusRef", "autoSelect", "isLazy", "isOpen", "defaultIsOpen", "onClose", "onOpen", "placement", "lazyBehavior", "direction", "computePositionOnMount"],
@@ -139,7 +214,7 @@ function useMenu(props) {
       focusMenu();
     }
   }, [autoSelect, focusFirstItem, focusMenu, onOpenProp]);
-  useFocusOnShowV2(menuRef, {
+  useFocusOnShow(menuRef, {
     focusRef: initialFocusRef,
     visible: isOpenProp,
     shouldFocus: true
@@ -185,7 +260,7 @@ function useMenu(props) {
    */
 
 
-  useUpdateEffect(function () {
+  useUpdateEffect$1(function () {
     if (!isOpen) {
       setFocusedIndex(-1);
     }
@@ -543,7 +618,7 @@ function useMenuItem(props, externalRef) {
   }, [setFocusedIndex, onFocusProp, index]);
   var isFocused = index === focusedIndex;
   var trulyDisabled = isDisabled && !isFocusable;
-  useUpdateEffect(function () {
+  useUpdateEffect$1(function () {
     if (!isOpen) return;
 
     if (isFocused && !trulyDisabled && ref.current) {

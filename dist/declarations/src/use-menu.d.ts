@@ -9,6 +9,12 @@ export declare const MenuDescendantsProvider: React.Provider<import("@chakra-ui/
     descendants: import("@chakra-ui/descendant/src/use-descendant").UseDescendantsReturn;
     index: number;
     enabledIndex: number;
+    /**
+     * If `true`, the first enabled menu item will receive focus and be selected
+     * when the menu opens.
+     *
+     * @default true
+     */
     register: (node: HTMLElement | null) => void;
 };
 export declare const MenuProvider: React.Provider<Omit<UseMenuReturn, "descendants">>, useMenuContext: () => Omit<UseMenuReturn, "descendants">;
