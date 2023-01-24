@@ -4,8 +4,7 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import { useClickable } from '@chakra-ui/clickable';
 import { createDescendantContext } from '@chakra-ui/descendant';
-import { useDisclosure, useOutsideClick, useUpdateEffect, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
-import { useFocusOnShow } from '@chakra-ui/hooks/src/use-focus-on-show-v2';
+import { useFocusOnShowV2, useDisclosure, useOutsideClick, useUpdateEffect, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
 import { useAnimationState } from '@chakra-ui/hooks/use-animation-state';
 import { usePopper } from '@chakra-ui/popper';
 import { createContext, mergeRefs, getValidChildren } from '@chakra-ui/react-utils';
@@ -140,7 +139,7 @@ function useMenu(props) {
       focusMenu();
     }
   }, [autoSelect, focusFirstItem, focusMenu, onOpenProp]);
-  useFocusOnShow(menuRef, {
+  useFocusOnShowV2(menuRef, {
     focusRef: initialFocusRef,
     visible: isOpenProp,
     shouldFocus: true
