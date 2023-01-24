@@ -5,12 +5,10 @@ import * as React from 'react';
 import { useEffect, useRef, useCallback } from 'react';
 import { useClickable } from '@chakra-ui/clickable';
 import { createDescendantContext } from '@chakra-ui/descendant';
-import { useCallbackRef, useDisclosure, useOutsideClick, useUpdateEffect as useUpdateEffect$1, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
+import { useCallbackRef, useSafeLayoutEffect, useUpdateEffect, useDisclosure, useOutsideClick, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
 import { useAnimationState } from '@chakra-ui/hooks/use-animation-state';
 import { usePopper } from '@chakra-ui/popper';
 import { createContext, mergeRefs, getValidChildren } from '@chakra-ui/react-utils';
-import { useUpdateEffect } from '@chakra-ui/hooks/src/use-update-effect';
-import { useSafeLayoutEffect } from '@chakra-ui/hooks/src/use-safe-layout-effect';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -260,7 +258,7 @@ function useMenu(props) {
    */
 
 
-  useUpdateEffect$1(function () {
+  useUpdateEffect(function () {
     if (!isOpen) {
       setFocusedIndex(-1);
     }
@@ -618,7 +616,7 @@ function useMenuItem(props, externalRef) {
   }, [setFocusedIndex, onFocusProp, index]);
   var isFocused = index === focusedIndex;
   var trulyDisabled = isDisabled && !isFocusable;
-  useUpdateEffect$1(function () {
+  useUpdateEffect(function () {
     if (!isOpen) return;
 
     if (isFocused && !trulyDisabled && ref.current) {

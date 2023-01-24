@@ -12,8 +12,6 @@ var hooks = require('@chakra-ui/hooks');
 var useAnimationState = require('@chakra-ui/hooks/use-animation-state');
 var popper = require('@chakra-ui/popper');
 var reactUtils = require('@chakra-ui/react-utils');
-var useUpdateEffect = require('@chakra-ui/hooks/src/use-update-effect');
-var useSafeLayoutEffect = require('@chakra-ui/hooks/src/use-safe-layout-effect');
 
 function _interopNamespace(e) {
   if (e && e.__esModule) return e;
@@ -102,7 +100,7 @@ function useFocusOnShow(target, options) {
   var autoFocusValue = shouldFocus && visible;
   var autoFocusRef = React.useRef(autoFocusValue);
   var lastVisibleRef = React.useRef(visible);
-  useSafeLayoutEffect.useSafeLayoutEffect(function () {
+  hooks.useSafeLayoutEffect(function () {
     if (!lastVisibleRef.current && visible) {
       autoFocusRef.current = autoFocusValue;
     }
@@ -134,7 +132,7 @@ function useFocusOnShow(target, options) {
       }
     }
   }, [visible, preventScroll, element, focusRef]);
-  useUpdateEffect.useUpdateEffect(function () {
+  hooks.useUpdateEffect(function () {
     onFocus();
   }, [onFocus]);
   useEventListener(element, "transitionend", onFocus);
