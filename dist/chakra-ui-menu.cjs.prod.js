@@ -9,6 +9,7 @@ var React = require('react');
 var clickable = require('@chakra-ui/clickable');
 var descendant = require('@chakra-ui/descendant');
 var hooks = require('@chakra-ui/hooks');
+var useFocusOnShowV2 = require('@chakra-ui/hooks/src/use-focus-on-show-v2');
 var useAnimationState = require('@chakra-ui/hooks/use-animation-state');
 var popper = require('@chakra-ui/popper');
 var reactUtils = require('@chakra-ui/react-utils');
@@ -163,7 +164,7 @@ function useMenu(props) {
       focusMenu();
     }
   }, [autoSelect, focusFirstItem, focusMenu, onOpenProp]);
-  hooks.useFocusOnShow(menuRef, {
+  useFocusOnShowV2.useFocusOnShow(menuRef, {
     focusRef: initialFocusRef,
     visible: isOpenProp,
     shouldFocus: true
