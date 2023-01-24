@@ -1,11 +1,10 @@
 import { useMultiStyleConfig, omitThemingProps, useTheme, StylesProvider, forwardRef, chakra, useStyles } from '@chakra-ui/system';
-import { isRefObject, getAllFocusable, focus, getOwnerDocument, normalizeEventKey, dataAttr, callAllHandlers, isHTMLElement, getNextItemFromSearch, determineLazyBehavior, isActiveElement, isString, isArray, removeItem, addItem, runIfFn, __DEV__, cx, callAll } from '@chakra-ui/utils';
+import { focus, getOwnerDocument, normalizeEventKey, dataAttr, callAllHandlers, isHTMLElement, getNextItemFromSearch, determineLazyBehavior, isActiveElement, isString, isArray, removeItem, addItem, runIfFn, __DEV__, cx, callAll } from '@chakra-ui/utils';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { useEffect, useRef, useCallback } from 'react';
 import { useClickable } from '@chakra-ui/clickable';
 import { createDescendantContext } from '@chakra-ui/descendant';
-import { useCallbackRef, useSafeLayoutEffect, useUpdateEffect, useDisclosure, useOutsideClick, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
+import { useFocusOnShow, useDisclosure, useOutsideClick, useUpdateEffect, useFocusOnHide, useIds, useUnmountEffect, useShortcut, useId, useControllableState } from '@chakra-ui/hooks';
 import { useAnimationState } from '@chakra-ui/hooks/use-animation-state';
 import { usePopper } from '@chakra-ui/popper';
 import { createContext, mergeRefs, getValidChildren } from '@chakra-ui/react-utils';
@@ -41,78 +40,6 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   }
 
   return target;
-}
-
-function useEventListener(target, event, handler, options) {
-  var listener = useCallbackRef(handler);
-  useEffect(function () {
-    var node = typeof target === "function" ? target() : target != null ? target : document;
-    if (!handler || !node) return;
-    node.addEventListener(event, listener, options);
-    return function () {
-      node.removeEventListener(event, listener, options);
-    };
-  }, [event, target, options, listener, handler]);
-  return function () {
-    var node = typeof target === "function" ? target() : target != null ? target : document;
-    node == null ? void 0 : node.removeEventListener(event, listener, options);
-  };
-}
-
-var defaultOptions = {
-  preventScroll: true,
-  shouldFocus: false
-};
-function useFocusOnShow(target, options) {
-  if (options === void 0) {
-    options = defaultOptions;
-  }
-
-  var _options = options,
-      focusRef = _options.focusRef,
-      preventScroll = _options.preventScroll,
-      shouldFocus = _options.shouldFocus,
-      visible = _options.visible;
-  var element = isRefObject(target) ? target.current : target;
-  var autoFocusValue = shouldFocus && visible;
-  var autoFocusRef = useRef(autoFocusValue);
-  var lastVisibleRef = useRef(visible);
-  useSafeLayoutEffect(function () {
-    if (!lastVisibleRef.current && visible) {
-      autoFocusRef.current = autoFocusValue;
-    }
-
-    lastVisibleRef.current = visible;
-  }, [visible, autoFocusValue]);
-  var onFocus = useCallback(function () {
-    if (!visible || !element || !autoFocusRef.current) return;
-    autoFocusRef.current = false;
-    if (element.contains(document.activeElement)) return;
-
-    if (focusRef != null && focusRef.current) {
-      requestAnimationFrame(function () {
-        var _focusRef$current;
-
-        (_focusRef$current = focusRef.current) == null ? void 0 : _focusRef$current.focus({
-          preventScroll: preventScroll
-        });
-      });
-    } else {
-      var tabbableEls = getAllFocusable(element);
-
-      if (tabbableEls.length > 0) {
-        requestAnimationFrame(function () {
-          tabbableEls[0].focus({
-            preventScroll: preventScroll
-          });
-        });
-      }
-    }
-  }, [visible, preventScroll, element, focusRef]);
-  useUpdateEffect(function () {
-    onFocus();
-  }, [onFocus]);
-  useEventListener(element, "transitionend", onFocus);
 }
 
 var _excluded$1 = ["id", "closeOnSelect", "closeOnBlur", "initialFocusRef", "autoSelect", "isLazy", "isOpen", "defaultIsOpen", "onClose", "onOpen", "placement", "lazyBehavior", "direction", "computePositionOnMount"],
@@ -189,20 +116,26 @@ function useMenu(props) {
   }, []);
   var focusFirstItem = React.useCallback(function () {
     var id = setTimeout(function () {
-      if (initialFocusRef) return;
-      var first = descendants.firstEnabled();
-      if (first) setFocusedIndex(first.index);
+      if (initialFocusRef) {
+        if (initialFocusRef.current) {
+          initialFocusRef.current.focus();
+          var index = descendants.indexOf(initialFocusRef.current);
+          setFocusedIndex(index);
+        }
+      } else {
+        var first = descendants.firstEnabled();
+        if (first) setFocusedIndex(first.index);
+      }
     });
     timeoutIds.current.add(id);
   }, [descendants, initialFocusRef]);
   var focusLastItem = React.useCallback(function () {
     var id = setTimeout(function () {
-      if (initialFocusRef) return;
       var last = descendants.lastEnabled();
       if (last) setFocusedIndex(last.index);
     });
     timeoutIds.current.add(id);
-  }, [descendants, initialFocusRef]);
+  }, [descendants]);
   var onOpenInternal = React.useCallback(function () {
     onOpenProp == null ? void 0 : onOpenProp();
 

@@ -66,78 +66,6 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   return target;
 }
 
-function useEventListener(target, event, handler, options) {
-  var listener = hooks.useCallbackRef(handler);
-  React.useEffect(function () {
-    var node = typeof target === "function" ? target() : target != null ? target : document;
-    if (!handler || !node) return;
-    node.addEventListener(event, listener, options);
-    return function () {
-      node.removeEventListener(event, listener, options);
-    };
-  }, [event, target, options, listener, handler]);
-  return function () {
-    var node = typeof target === "function" ? target() : target != null ? target : document;
-    node == null ? void 0 : node.removeEventListener(event, listener, options);
-  };
-}
-
-var defaultOptions = {
-  preventScroll: true,
-  shouldFocus: false
-};
-function useFocusOnShow(target, options) {
-  if (options === void 0) {
-    options = defaultOptions;
-  }
-
-  var _options = options,
-      focusRef = _options.focusRef,
-      preventScroll = _options.preventScroll,
-      shouldFocus = _options.shouldFocus,
-      visible = _options.visible;
-  var element = utils.isRefObject(target) ? target.current : target;
-  var autoFocusValue = shouldFocus && visible;
-  var autoFocusRef = React.useRef(autoFocusValue);
-  var lastVisibleRef = React.useRef(visible);
-  hooks.useSafeLayoutEffect(function () {
-    if (!lastVisibleRef.current && visible) {
-      autoFocusRef.current = autoFocusValue;
-    }
-
-    lastVisibleRef.current = visible;
-  }, [visible, autoFocusValue]);
-  var onFocus = React.useCallback(function () {
-    if (!visible || !element || !autoFocusRef.current) return;
-    autoFocusRef.current = false;
-    if (element.contains(document.activeElement)) return;
-
-    if (focusRef != null && focusRef.current) {
-      requestAnimationFrame(function () {
-        var _focusRef$current;
-
-        (_focusRef$current = focusRef.current) == null ? void 0 : _focusRef$current.focus({
-          preventScroll: preventScroll
-        });
-      });
-    } else {
-      var tabbableEls = utils.getAllFocusable(element);
-
-      if (tabbableEls.length > 0) {
-        requestAnimationFrame(function () {
-          tabbableEls[0].focus({
-            preventScroll: preventScroll
-          });
-        });
-      }
-    }
-  }, [visible, preventScroll, element, focusRef]);
-  hooks.useUpdateEffect(function () {
-    onFocus();
-  }, [onFocus]);
-  useEventListener(element, "transitionend", onFocus);
-}
-
 var _excluded$1 = ["id", "closeOnSelect", "closeOnBlur", "initialFocusRef", "autoSelect", "isLazy", "isOpen", "defaultIsOpen", "onClose", "onOpen", "placement", "lazyBehavior", "direction", "computePositionOnMount"],
     _excluded2$1 = ["onMouseEnter", "onMouseMove", "onMouseLeave", "onClick", "onFocus", "isDisabled", "isFocusable", "closeOnSelect", "type"],
     _excluded3$1 = ["type", "isChecked"],
@@ -212,20 +140,26 @@ function useMenu(props) {
   }, []);
   var focusFirstItem = React__namespace.useCallback(function () {
     var id = setTimeout(function () {
-      if (initialFocusRef) return;
-      var first = descendants.firstEnabled();
-      if (first) setFocusedIndex(first.index);
+      if (initialFocusRef) {
+        if (initialFocusRef.current) {
+          initialFocusRef.current.focus();
+          var index = descendants.indexOf(initialFocusRef.current);
+          setFocusedIndex(index);
+        }
+      } else {
+        var first = descendants.firstEnabled();
+        if (first) setFocusedIndex(first.index);
+      }
     });
     timeoutIds.current.add(id);
   }, [descendants, initialFocusRef]);
   var focusLastItem = React__namespace.useCallback(function () {
     var id = setTimeout(function () {
-      if (initialFocusRef) return;
       var last = descendants.lastEnabled();
       if (last) setFocusedIndex(last.index);
     });
     timeoutIds.current.add(id);
-  }, [descendants, initialFocusRef]);
+  }, [descendants]);
   var onOpenInternal = React__namespace.useCallback(function () {
     onOpenProp == null ? void 0 : onOpenProp();
 
@@ -235,7 +169,7 @@ function useMenu(props) {
       focusMenu();
     }
   }, [autoSelect, focusFirstItem, focusMenu, onOpenProp]);
-  useFocusOnShow(menuRef, {
+  hooks.useFocusOnShow(menuRef, {
     focusRef: initialFocusRef,
     visible: isOpenProp,
     shouldFocus: true
