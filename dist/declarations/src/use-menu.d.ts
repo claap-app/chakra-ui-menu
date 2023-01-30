@@ -64,6 +64,12 @@ export interface UseMenuProps extends Omit<UsePopperProps, "enabled">, UseDisclo
      */
     direction?: "ltr" | "rtl";
     computePositionOnMount?: boolean;
+    /**
+     * If `true`, focus will be returned to the element that triggers the popover
+     * when it closes
+     * @default true
+     */
+    returnFocusOnClose?: boolean;
 }
 /**
  * React Hook to manage a menu

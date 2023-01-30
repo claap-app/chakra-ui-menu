@@ -66,7 +66,7 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   return target;
 }
 
-var _excluded$1 = ["id", "closeOnSelect", "closeOnBlur", "initialFocusRef", "autoSelect", "isLazy", "isOpen", "defaultIsOpen", "onClose", "onOpen", "placement", "lazyBehavior", "direction", "computePositionOnMount"],
+var _excluded$1 = ["id", "closeOnSelect", "closeOnBlur", "initialFocusRef", "autoSelect", "isLazy", "isOpen", "defaultIsOpen", "onClose", "onOpen", "placement", "lazyBehavior", "direction", "computePositionOnMount", "returnFocusOnClose"],
     _excluded2$1 = ["onMouseEnter", "onMouseMove", "onMouseLeave", "onClick", "onFocus", "isDisabled", "isFocusable", "closeOnSelect", "type"],
     _excluded3$1 = ["type", "isChecked"],
     _excluded4$1 = ["children", "type", "value", "defaultValue", "onChange"];
@@ -119,6 +119,8 @@ function useMenu(props) {
       direction = _props.direction,
       _props$computePositio = _props.computePositionOnMount,
       computePositionOnMount = _props$computePositio === void 0 ? false : _props$computePositio,
+      _props$returnFocusOnC = _props.returnFocusOnClose,
+      returnFocusOnClose = _props$returnFocusOnC === void 0 ? true : _props$returnFocusOnC,
       popperProps = _objectWithoutPropertiesLoose(_props, _excluded$1);
   /**
    * Prepare the reference to the menu and disclosure
@@ -223,7 +225,7 @@ function useMenu(props) {
   hooks.useFocusOnHide(menuRef, {
     focusRef: buttonRef,
     visible: isOpen,
-    shouldFocus: true
+    shouldFocus: returnFocusOnClose
   });
   var animationState = useAnimationState.useAnimationState({
     isOpen: isOpen,
