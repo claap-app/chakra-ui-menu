@@ -128,7 +128,7 @@ export const WithDisabledButFocusableItem = () => (
   </Menu>
 )
 
-export const WithTogglableMenuItems = () => {
+export const WithToggleableMenuItems = () => {
   const [items, setItems] = React.useState<
     {
       content: string
@@ -322,6 +322,25 @@ export const WithLetterNavigation = () => (
     </MenuList>
   </Menu>
 )
+
+export const WithScrolling = () => {
+  const items = React.useMemo(
+    () => Array.from({ length: 30 }).map((_, i) => `Option ${i}`),
+    [],
+  )
+  return (
+    <Menu>
+      <MenuButton>Choose an option</MenuButton>
+      <MenuList maxHeight="15rem" overflowY="scroll">
+        {items.map((value, i) => (
+          <MenuItem key={i} value={value}>
+            {value}
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  )
+}
 
 export const JustAnotherExample = () => (
   <Menu>

@@ -10,7 +10,8 @@ import { Portal } from "@chakra-ui/portal"
 import * as React from "react"
 import { Button } from "@chakra-ui/button"
 import { FaSearch, FaTruck, FaUndoAlt, FaUnlink } from "react-icons/fa"
-import { extendTheme, ThemeProvider } from "@chakra-ui/react"
+import { ChakraProvider } from "@chakra-ui/provider"
+import theme from "@chakra-ui/theme"
 import {
   Menu,
   MenuButton,
@@ -217,8 +218,10 @@ test("MenuOptionGroup radio", async () => {
 
   fireEvent.click(button)
 
-  await waitFor(() => expect(screen.getByText("Order")).toBeInTheDocument())
-  expect(screen.getAllByRole("menuitemradio")).toHaveLength(2)
+  const title = await screen.findByText("Order")
+  expect(title).toBeInTheDocument()
+  const options = await screen.findAllByRole("menuitemradio")
+  expect(options).toHaveLength(2)
 })
 
 test("MenuOptionGroup radio defaultValue checked", async () => {
@@ -238,7 +241,6 @@ test("MenuOptionGroup radio defaultValue checked", async () => {
   )
 
   const button = screen.getByRole("button")
-
   fireEvent.click(button)
 
   expect(screen.getByText("Option 1").closest("button")).toBeChecked()
@@ -265,12 +267,15 @@ test("MenuOptionGroup checkbox defaultValue single checked", async () => {
 
   fireEvent.click(button)
 
-  await waitFor(() => expect(screen.getByText("Info")).toBeInTheDocument())
-  expect(screen.getAllByRole("menuitemcheckbox")).toHaveLength(3)
+  expect(await screen.findByText("Info")).toBeInTheDocument()
 
-  expect(screen.getByText("Email").closest("button")).toBeChecked()
-  expect(screen.getByText("Phone").closest("button")).not.toBeChecked()
-  expect(screen.getByText("Country").closest("button")).not.toBeChecked()
+  const items = await screen.findAllByRole("menuitemcheckbox")
+  expect(items).toHaveLength(3)
+
+  const [email, phone, country] = await screen.findAllByRole("menuitemcheckbox")
+  expect(email).toBeChecked()
+  expect(phone).not.toBeChecked()
+  expect(country).not.toBeChecked()
 })
 
 test("MenuOptionGroup checkbox defaultValue multiple checked", () => {
@@ -447,7 +452,7 @@ test("MenuItem can override its parent menu's `closeOnSelect` and close the menu
 
 test("MenuList direction flips in rtl", () => {
   render(
-    <ThemeProvider theme={extendTheme({ direction: "rtl" })}>
+    <ChakraProvider theme={{ ...theme, direction: "rtl" }}>
       <Menu placement="top-end" isOpen>
         <MenuButton as={Button}>Open menu</MenuButton>
         <MenuList>
@@ -455,7 +460,7 @@ test("MenuList direction flips in rtl", () => {
           <MenuItem>No no, pick me</MenuItem>
         </MenuList>
       </Menu>
-    </ThemeProvider>,
+    </ChakraProvider>,
   )
 
   const menuList = screen.getByRole("menu")
